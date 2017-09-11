@@ -5,10 +5,10 @@ import pymysql
 s = requests.Session()
 
 #阈值
-high=550
+high=600
 
 #页数
-page=33
+page=20
 
 #获取用户名
 def getUserName(uid):
@@ -20,14 +20,17 @@ def getUserName(uid):
 
 #获取用户top ranks信息
 def getUserTopRanks(uid):
-    userurl='https://osu.ppy.sh/pages/include/profile-leader.php?u='+str(uid)+'&m=0'
-    data = s.get(userurl).content
-    userranks1 = data.decode('utf-8')
-    findHighPPs(userranks1, uid)
-    userurl+='&pp=1'
-    data = s.get(userurl).content
-    userranks2 = data.decode('utf-8')
-    findHighPPs(userranks2, uid)
+    try:
+        userurl='https://osu.ppy.sh/pages/include/profile-leader.php?u='+str(uid)+'&m=0'
+        data = s.get(userurl).content
+        userranks1 = data.decode('utf-8')
+        findHighPPs(userranks1, uid)
+        userurl+='&pp=1'
+        data = s.get(userurl).content
+        userranks2 = data.decode('utf-8')
+        findHighPPs(userranks2, uid)
+    except:
+        getUserTopRanks(uid)
 
 #找到高于某值的地图
 def findHighPPs(info, uid):
@@ -80,9 +83,11 @@ def getRanks(page):
         print(uid)
         getUserTopRanks(int(uid))
 
+
 def getAll():
     for i in range(page):
         getRanks(i+1)
 
 if __name__=="__main__":
     getAll()
+    print('finished')
