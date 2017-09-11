@@ -5,7 +5,10 @@ import pymysql
 s = requests.Session()
 
 #阈值
-high=300
+high=550
+
+#页数
+page=33
 
 #获取用户名
 def getUserName(uid):
@@ -66,5 +69,20 @@ def writetoDB(bid, uid, user, pp, map):
         db.rollback()
     db.close()
 
+#获得排行榜
+def getRanks(page):
+    userurl = 'https://osu.ppy.sh/p/pp/?m=0&s=3&o=1&f=0&page='+str(page)
+    data = s.get(userurl).content
+    ranks = data.decode('utf-8')
+    uidlist = re.compile('href="/u/(.*?)">')
+    uids = re.findall(uidlist, ranks)
+    for uid in uids:
+        print(uid)
+        getUserTopRanks(int(uid))
+
+def getAll():
+    for i in range(page):
+        getRanks(i+1)
+
 if __name__=="__main__":
-    getUserTopRanks(3863328)
+    getAll()
