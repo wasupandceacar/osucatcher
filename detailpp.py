@@ -8,6 +8,6 @@ def getDetail(uid, s, bid, pp):
     jdata=json.loads(ddata)
     for map in jdata:
         if int(map['beatmap_id'])==bid:
-            if round(float(map['pp']))==pp:
+            if round(float(map['pp'])+0.0001)==pp:
                 return float(map['pp'])
     return 0
