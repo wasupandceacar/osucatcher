@@ -1,6 +1,7 @@
 import requests
 import re
 import pymysql
+from detailpp import *
 
 s = requests.Session()
 
@@ -56,7 +57,7 @@ def findHighPPs(info, uid):
     user=getUserName(uid)
     for i in range(len(pps)):
         if int(pps[i])>=high:
-            writetoDB(int(bids[i]),uid,user,int(pps[i]),newmaps[i])
+            writetoDB(int(bids[i]),uid,user,getDetail(uid, s, int(bids[i]), int(pps[i])),newmaps[i])
 
 #写入数据库
 def writetoDB(bid, uid, user, pp, map):
@@ -64,7 +65,7 @@ def writetoDB(bid, uid, user, pp, map):
     cursor = db.cursor()
     sql = """INSERT INTO osu_High_pps
               (bid, uid, user, pp, map_info)
-              VALUES ("%d", "%d", "%s" ,"%d", "%s")""" % (bid, uid, user, pp, map)
+              VALUES ("%d", "%d", "%s" ,"%s", "%s")""" % (bid, uid, user, pp, map)
     try:
         cursor.execute(sql)
         db.commit()
@@ -77,7 +78,7 @@ def getRanks(page):
     userurl = 'https://osu.ppy.sh/p/pp/?m=0&s=3&o=1&f=0&page='+str(page)
     data = s.get(userurl).content
     ranks = data.decode('utf-8')
-    uidlist = re.compile('href="/u/(.*?)">')
+    uidlist = re.compile('href=\'/u/(.*?)\'>')
     uids = re.findall(uidlist, ranks)
     for uid in uids:
         print(uid)

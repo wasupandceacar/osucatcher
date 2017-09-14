@@ -47,3 +47,4 @@ Temporary Items
 .apdisk
 *.xml
 .idea/osucatcher.iml
+__pycache__/detailpp.cpython-35.pyc
