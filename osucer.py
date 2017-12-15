@@ -58,16 +58,17 @@ def findHighPPs(info, uid):
     user=getUserName(uid)
     for i in range(len(pps)):
         if int(pps[i])>=high:
+            print(getDetail(uid, s, int(bids[i]), int(pps[i])))
             writetoDB(int(bids[i]),uid,user,getDetail(uid, s, int(bids[i]), int(pps[i])),newmaps[i])
 
 #写入数据库
 def writetoDB(bid, uid, user, pp, map):
     try:
-        db = pymysql.connect("localhost", "root", "1248163264128", "osu")
+        db = pymysql.connect("138.68.57.30", "root", "1248163264128", "osu")
         cursor = db.cursor()
         sql = """INSERT INTO osu_High_pps
               (bid, uid, user, pp, map_info)
-              VALUES ("%d", "%d", "%s" ,"%s", "%s")""" % (bid, uid, user, pp, map)
+              VALUES ("%d", "%d", "%s" ,"%s", "%s") on duplicate key update user="%s", pp="%s", map_info="%s" """ % (bid, uid, user, pp, map, user, pp, map)
         cursor.execute(sql)
         db.commit()
         db.close()
