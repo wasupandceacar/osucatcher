@@ -2,6 +2,7 @@ import requests
 import re
 import pymysql
 from detailpp import *
+import traceback
 
 s = requests.Session()
 
@@ -61,17 +62,17 @@ def findHighPPs(info, uid):
 
 #写入数据库
 def writetoDB(bid, uid, user, pp, map):
-    db = pymysql.connect("138.68.41.21", "root", "1248163264128", "osu")
-    cursor = db.cursor()
-    sql = """INSERT INTO osu_High_pps
+    try:
+        db = pymysql.connect("localhost", "root", "1248163264128", "osu")
+        cursor = db.cursor()
+        sql = """INSERT INTO osu_High_pps
               (bid, uid, user, pp, map_info)
               VALUES ("%d", "%d", "%s" ,"%s", "%s")""" % (bid, uid, user, pp, map)
-    try:
         cursor.execute(sql)
         db.commit()
+        db.close()
     except:
-        db.rollback()
-    db.close()
+        traceback.print_exc()
 
 #获得排行榜
 def getRanks(page):
